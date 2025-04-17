@@ -1,7 +1,7 @@
   export { createPlacesItemClone, deletePlacesItemClone, addLikeForCard, addImg };
 
-  import { placesItem, placesList, inputCardName, inputCardUrl, openImage } from './index.js';
-  import { openPopup, closePopup } from './modal.js';
+  //import { placesItem, placesList, inputCardName, inputCardUrl, openImage } from './src/index.js';
+  //import { openPopup, closePopup } from './modal.js';
 
 
 // функция создания элемента списка

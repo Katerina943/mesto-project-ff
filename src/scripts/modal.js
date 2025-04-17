@@ -1,5 +1,5 @@
 export { openEditProfile, openAddImage, openPopup, closePopup, addDataInProfile };
-import { inputUserName, inputDestiny, userName, destiny, openImage, buttonsClose, popups } from './index.js';
+//import { inputUserName, inputDestiny, userName, destiny, openImage, buttonsClose, popups } from './src/index.js';
 
 
 // функции - слушатели
@@ -52,20 +52,3 @@ document.addEventListener('keydown', function(event) {
   };
 });
 
-// закрытие модального окна по оверлею
-popups.forEach((popup) => {
-  popup.onclick = function(event) {
-    const target = event.target;
-    if (target === popup) {
-      closePopup(popup);      
-    };
-  };
-});
-
-//закрытие модального окна на крестик
-buttonsClose.forEach((buttonClose) => {
-  buttonClose.addEventListener('click', () => {
-    const popup = buttonClose.closest('.popup');  // находим родительсткий элемент
-    closePopup(popup);       
-  });
-});

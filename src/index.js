@@ -1,10 +1,10 @@
 export {placesItem, placesList, inputUserName, inputDestiny, userName, destiny, inputCardName, inputCardUrl,
   openImage, buttonsClose, popups};
 
-import './cards'; 
-import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard, addImg } from './card';
-import { openEditProfile, openAddImage, addDataInProfile } from './modal';
-import '../styles/index.css';
+import { initialCards } from "./scripts/cards";
+import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard, addImg } from './scripts/card';
+import { openEditProfile, openAddImage, addDataInProfile } from './scripts/modal';
+import './styles/index.css';
 
 
 // загружаем шаблон для создания элемента списка
@@ -84,3 +84,21 @@ buttonAddImage.addEventListener('click', openAddImage);
 formEditProfile.addEventListener('submit', addDataInProfile);
 // на форме Добавить изображение
 formAddImage.addEventListener('submit', addImg);
+
+// закрытие модального окна по оверлею
+popups.forEach((popup) => {
+  popup.onclick = function(event) {
+    const target = event.target;
+    if (target === popup) {
+      closePopup(popup);      
+    };
+  };
+});
+
+//закрытие модального окна на крестик
+buttonsClose.forEach((buttonClose) => {
+  buttonClose.addEventListener('click', () => {
+    const popup = buttonClose.closest('.popup');  // находим родительсткий элемент
+    closePopup(popup);       
+  });
+});
