@@ -1,10 +1,10 @@
 import { initialCards } from './scripts/cards.js';
 import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard } from './scripts/card.js';
-import { openEditProfile, openAddImage, addDataInProfile, addImg, closePopup} from './scripts/modal.js';
+import { openAddImage, addDataInProfile, addImg, closePopup, openPopup} from './scripts/modal.js';
 import '../src/styles/index.css';  // '..//styles/index.css'
 
-export { placesList, placesItem, openImage, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
-          formAddImage, windowAddImage, inputCardName, inputCardUrl }
+export { placesList, placesItem, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
+  formAddImage, windowAddImage, inputCardName, inputCardUrl }
 
 // загружаем шаблон для создания элемента списка
 const cardTemplate = document.querySelector("#card-template").content;
@@ -16,8 +16,8 @@ const mainContent = document.querySelector(".content");
 const placesList = mainContent.querySelector(".places__list");
 
 for (let card of initialCards) {
-  // в конец списка ul добавляем элемент li
-  placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard, placesItem));   
+  // в начало списка ul добавляем элемент li
+  placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard, placesItem, openPopupImage));   
 }
 
 // Модальное окно Редактировать профиль
@@ -40,9 +40,6 @@ const windowAddImage = document.querySelector('.popup_type_new-card');
   // поле ссылка
   let inputCardUrl = windowAddImage.querySelector('.popup__input_type_url');
 
-//Модальное окно Просмотреть изображение
-const openImage = document.querySelector('.popup_type_image');
-
 // Кнопки открытия модальных окон
 // кнопка Редактировать профиль
 const buttonEditProfile = document.querySelector('.profile__edit-button');
@@ -63,7 +60,7 @@ let collection = document.forms;
 const popups = document.querySelectorAll('.popup');
 
 // слушатель кнопки Редактировать профиль
-buttonEditProfile.addEventListener('click', openEditProfile);
+buttonEditProfile.addEventListener('click', editProfileOpenedHandler);
 
 // слушатель кнопки Добавить изображение (+)
 // открывается форма добавления изображения
@@ -92,8 +89,28 @@ popups.forEach((popup) => {
 });
 
 // закрытие модального окна нажатием на клавишу "Escape"
-document.addEventListener('keydown', function(event) {    
-  if (event.key === 'Escape') {
-    closePopup(openImage);    
-  };
-});
+document.addEventListener('keydown', handleEscape);
+
+function handleEscape(evt) {
+  if (evt.key === 'Escape') {
+    const openedPopup = document.querySelector('.popup_is-opened'); 
+    if (openedPopup === null) return;
+    closePopup(openedPopup);     
+  }
+};
+
+// функция-слушатель
+// открыть Редактировать профиль
+function editProfileOpenedHandler() {
+  inputUserName.value = userName.textContent;
+  inputDestiny.value = userDestiny.textContent;
+  openPopup(windowEditProfile);
+};
+
+// функция открытия модального окна изображения
+function openPopupImage(nameModalWindowImage) {
+  nameModalWindowImage.classList.add('popup_is-animated');
+  nameModalWindowImage.classList.toggle('popup_is-opened');
+};
+
+

@@ -1,10 +1,9 @@
 export { createPlacesItemClone, deletePlacesItemClone, addLikeForCard }
 
-import { openPopup } from './modal.js';
-import { openImage } from '../index.js';
+
 
 // функция создания элемента списка
-function createPlacesItemClone (initialCard, deletePlacesItem, addLikeForCard, placesItem) {
+function createPlacesItemClone (initialCard, deletePlacesItem, addLikeForCard, placesItem, openPopupImage) {
   // создаём новый элемент списка изображений 
   const placesItemClone = placesItem.cloneNode(true);
 
@@ -29,18 +28,22 @@ function createPlacesItemClone (initialCard, deletePlacesItem, addLikeForCard, p
   cardLikeButton.addEventListener('click', addLikeForCard);
 
   // загружаем обработчик события на элемент li
+  //Модальное окно Просмотреть изображение
+  const openImage = document.querySelector('.popup_type_image');
+  const dataImage = openImage.querySelector('.popup__image');
+  const titleImage = openImage.querySelector('.popup__caption');
+
   placesItemClone
       .addEventListener('click', function(event) {
         if (event.target.classList.contains('card__image')) {
-          openPopup(openImage);
-          openImage.querySelector('.popup__image').alt = event.target.alt;
-          openImage.querySelector('.popup__image').src= event.target.src;
-          openImage.querySelector('.popup__caption').textContent = event.target.alt;
+          openPopupImage(openImage);
+          dataImage.alt = event.target.alt;
+          dataImage.src= event.target.src;
+          titleImage.textContent = event.target.alt;
         };
     });
   return placesItemClone;
 }
-
 
 // функция удаления элемента списка
 function deletePlacesItemClone(event) {

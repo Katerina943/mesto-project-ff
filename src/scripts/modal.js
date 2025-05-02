@@ -1,26 +1,17 @@
-export { openEditProfile, openAddImage,  addDataInProfile, addImg, 
+export { openAddImage,  addDataInProfile, addImg, 
          openPopup, closePopup };
-//import { inputUserName, inputDestiny, userName, destiny, openImage, buttonsClose, popups } from './src/index.js';
 
 import { placesList, placesItem, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
   formAddImage, windowAddImage, inputCardName, inputCardUrl } from '../index.js';
 import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard } from './card.js';
 
 
-// функции - слушатели
-// открыть Редактировать профиль
-function openEditProfile() {
-  inputUserName.value = userName.textContent;
-  inputDestiny.value = userDestiny.textContent;
-  openPopup(windowEditProfile);
-} 
-
+// функция - слушатели
 // открыть форму Добавить изображение
 function openAddImage(event) {
   event.preventDefault();
   formAddImage.reset();  // очистка формы при открытии
-  windowAddImage.classList.add('popup_is-animated');
-  windowAddImage.classList.toggle('popup_is-opened');
+  openPopup(windowAddImage);
 }
 
 // функция добавления значений: имени и занятия в текстовые поля на страницу
@@ -41,7 +32,7 @@ function addDataInProfile(event) {
 // функция добавления элемента li (изображения) в начало списка ul
 function addImg(event) {
   event.preventDefault();
-  let cardImg = {};
+  const cardImg = {};
   cardImg.name = inputCardName.value;
   cardImg.link = inputCardUrl.value;
   placesList.prepend(createPlacesItemClone(cardImg, deletePlacesItemClone, addLikeForCard, placesItem));
