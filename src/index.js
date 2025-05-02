@@ -12,15 +12,12 @@ const placesItem = cardTemplate.querySelector(".places__item");
 // загружаем основное содержимое страницы
 const mainContent = document.querySelector(".content");
 
-// загружаем кнопку добавления изображения
-//const profileAddButton = mainContent.querySelector(".profile__add-button");
-
 // загружаем список изображений
 const placesList = mainContent.querySelector(".places__list");
 
 for (let card of initialCards) {
   // в конец списка ul добавляем элемент li
-  placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard));   
+  placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard, placesItem));   
 }
 
 // Модальное окно Редактировать профиль
