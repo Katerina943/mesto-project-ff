@@ -1,12 +1,17 @@
-export { openEditProfile, openAddImage, openPopup, closePopup, addDataInProfile };
+export { openEditProfile, openAddImage,  addDataInProfile, addImg, 
+         openPopup, closePopup };
 //import { inputUserName, inputDestiny, userName, destiny, openImage, buttonsClose, popups } from './src/index.js';
+
+import { placesList, placesItem, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
+  formAddImage, windowAddImage, inputCardName, inputCardUrl } from '../index.js';
+import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard } from './card.js';
 
 
 // функции - слушатели
 // открыть Редактировать профиль
 function openEditProfile() {
   inputUserName.value = userName.textContent;
-  inputDestiny.value = destiny.textContent;
+  inputDestiny.value = userDestiny.textContent;
   openPopup(windowEditProfile);
 } 
 
@@ -21,7 +26,7 @@ function openAddImage(event) {
 // функция добавления значений: имени и занятия в текстовые поля на страницу
 function addInpyt(title, data) {
   userName.textContent = title;
-  destiny.textContent = data;
+  userDestiny.textContent = data;
 };
 
 // функция-слушатель, сохраняет значения имени и занятия по кнопке Сохранить
@@ -33,6 +38,15 @@ function addDataInProfile(event) {
   windowEditProfile.classList.remove('popup_is-opened'); 
 };
 
+// функция добавления элемента li (изображения) в начало списка ul
+function addImg(event) {
+  event.preventDefault();
+  let cardImg = {};
+  cardImg.name = inputCardName.value;
+  cardImg.link = inputCardUrl.value;
+  placesList.prepend(createPlacesItemClone(cardImg, deletePlacesItemClone, addLikeForCard, placesItem));
+  windowAddImage.classList.remove('popup_is-opened');  
+};
 
 // функция открытия модального окна
 function openPopup(nameModalWindow) {
@@ -45,10 +59,5 @@ function closePopup(nameModalWindow) {
   nameModalWindow.classList.remove('popup_is-opened');
 }
 
-// закрытие модального окна нажатием на клавишу "Escape"
-document.addEventListener('keydown', function(event) {    
-  if (event.key === 'Escape') {
-    closePopup(openImage);    
-  };
-});
+
 

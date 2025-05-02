@@ -1,11 +1,10 @@
-  export { createPlacesItemClone, deletePlacesItemClone, addLikeForCard, addImg };
+export { createPlacesItemClone, deletePlacesItemClone, addLikeForCard }
 
-  //import { placesItem, placesList, inputCardName, inputCardUrl, openImage } from './src/index.js';
-  //import { openPopup, closePopup } from './modal.js';
-
+import { openPopup } from './modal.js';
+import { openImage } from '../index.js';
 
 // функция создания элемента списка
-function createPlacesItemClone(initialCard, deletePlacesItem, addLikeForCard) {
+function createPlacesItemClone (initialCard, deletePlacesItem, addLikeForCard, placesItem) {
   // создаём новый элемент списка изображений 
   const placesItemClone = placesItem.cloneNode(true);
 
@@ -42,6 +41,7 @@ function createPlacesItemClone(initialCard, deletePlacesItem, addLikeForCard) {
   return placesItemClone;
 }
 
+
 // функция удаления элемента списка
 function deletePlacesItemClone(event) {
   // проверка вызова события на кнопке удаления
@@ -63,23 +63,4 @@ function addLikeForCard(event) {
   cardLikeButton.classList.toggle('card__like-button_is-active');
 }
 
-/* !!! Нигде не используется?
-// функция установки слушателя для открытия модального окна изображения
-function openModalWindowsByImage(event) {
-  if (event.target.classList.contains('card__image')) {
-    openPopup(openImage);
-    openImage.querySelector('.popup__image').alt = event.target.alt;
-    openImage.querySelector('.popup__image').src= event.target.src;
-  }
-} 
-*/
 
-// функция добавления элемента li (изображения) в начало списка ul
-function addImg(event) {
-  event.preventDefault();
-  let cardImg = {};
-  cardImg.name = inputCardName.value;
-  cardImg.link = inputCardUrl.value;
-  placesList.prepend(createPlacesItemClone(cardImg, deletePlacesItemClone, addLikeForCard));
-  closePopup(windowAddImage);
-};
