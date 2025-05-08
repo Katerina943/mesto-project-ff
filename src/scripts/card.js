@@ -1,7 +1,5 @@
 export { createPlacesItemClone, deletePlacesItemClone, addLikeForCard }
 
-
-
 // функция создания элемента списка
 function createPlacesItemClone (initialCard, deletePlacesItem, addLikeForCard, placesItem, openPopupImage) {
   // создаём новый элемент списка изображений 

@@ -4,7 +4,7 @@ import { openAddImage, addDataInProfile, addImg, closePopup, openPopup} from './
 import '../src/styles/index.css';  // '..//styles/index.css'
 
 export { placesList, placesItem, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
-  formAddImage, windowAddImage, inputCardName, inputCardUrl }
+  formAddImage, windowAddImage, inputCardName, inputCardUrl, handleEscape }
 
 // загружаем шаблон для создания элемента списка
 const cardTemplate = document.querySelector("#card-template").content;
@@ -88,14 +88,10 @@ popups.forEach((popup) => {
   };
 });
 
-// закрытие модального окна нажатием на клавишу "Escape"
-document.addEventListener('keydown', handleEscape);
-
 function handleEscape(evt) {
   if (evt.key === 'Escape') {
     const openedPopup = document.querySelector('.popup_is-opened'); 
-    if (openedPopup === null) return;
-    closePopup(openedPopup);     
+    closePopup(openedPopup);
   }
 };
 
@@ -111,6 +107,7 @@ function editProfileOpenedHandler() {
 function openPopupImage(nameModalWindowImage) {
   nameModalWindowImage.classList.add('popup_is-animated');
   nameModalWindowImage.classList.toggle('popup_is-opened');
+  document.addEventListener('keydown', handleEscape);
 };
 
 

@@ -2,7 +2,7 @@ export { openAddImage,  addDataInProfile, addImg,
          openPopup, closePopup };
 
 import { placesList, placesItem, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
-  formAddImage, windowAddImage, inputCardName, inputCardUrl } from '../index.js';
+  formAddImage, windowAddImage, inputCardName, inputCardUrl, handleEscape } from '../index.js';
 import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard } from './card.js';
 
 
@@ -43,11 +43,15 @@ function addImg(event) {
 function openPopup(nameModalWindow) {
   nameModalWindow.classList.add('popup_is-animated');
   nameModalWindow.classList.toggle('popup_is-opened');
+  // регистрируем обработчик закрытия модального окна нажатием на клавишу "Escape"
+  document.addEventListener('keydown', handleEscape);
 };
 
 // функция закрытия модального окна
 function closePopup(nameModalWindow) {
   nameModalWindow.classList.remove('popup_is-opened');
+  // удаляем обработчик закрытия модального окна нажатием на клавишу "Escape"
+  document.removeEventListener('keydown', handleEscape); 
 }
 
 
