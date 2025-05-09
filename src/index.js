@@ -1,10 +1,10 @@
 import { initialCards } from './scripts/cards.js';
 import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard } from './scripts/card.js';
-import { openAddImage, addDataInProfile, addImg, closePopup, openPopup} from './scripts/modal.js';
+import { addDataInProfile, addImg, closePopup, openPopup} from './scripts/modal.js';
 import '../src/styles/index.css';  // '..//styles/index.css'
 
 export { placesList, placesItem, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
-  formAddImage, windowAddImage, inputCardName, inputCardUrl, handleEscape }
+  formAddImage, windowAddImage, inputCardName, inputCardUrl, handlerEscape, handlerOpenImage }
 
 // загружаем шаблон для создания элемента списка
 const cardTemplate = document.querySelector("#card-template").content;
@@ -17,15 +17,15 @@ const placesList = mainContent.querySelector(".places__list");
 
 for (let card of initialCards) {
   // в начало списка ul добавляем элемент li
-  placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard, placesItem, openPopupImage));   
+  placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard, placesItem, handlerOpenImage));   
 }
 
 // Модальное окно Редактировать профиль
 const windowEditProfile = document.querySelector('.popup_type_edit');
   // поле имя пользователя
-  let inputUserName = windowEditProfile.querySelector('.popup__input_type_name');
+  const inputUserName = windowEditProfile.querySelector('.popup__input_type_name');
   // поле занятие
-  let inputDestiny = windowEditProfile.querySelector('.popup__input_type_description');  
+  const inputDestiny = windowEditProfile.querySelector('.popup__input_type_description');  
 
 // находим данные о пользователе на странице
   // имя пользователя на странице
@@ -49,6 +49,9 @@ const buttonAddImage = document.querySelector('.profile__add-button');
 
 // Кнопки-крестики закрытия модальных окон
 const buttonsClose = document.querySelectorAll('.popup__close');
+
+//Модальное окно Просмотреть изображение
+const openImage = document.querySelector('.popup_type_image');
 
 // Массив форм
 let collection = document.forms;
@@ -88,7 +91,7 @@ popups.forEach((popup) => {
   };
 });
 
-function handleEscape(evt) {
+function handlerEscape(evt) {
   if (evt.key === 'Escape') {
     const openedPopup = document.querySelector('.popup_is-opened'); 
     closePopup(openedPopup);
@@ -107,7 +110,29 @@ function editProfileOpenedHandler() {
 function openPopupImage(nameModalWindowImage) {
   nameModalWindowImage.classList.add('popup_is-animated');
   nameModalWindowImage.classList.toggle('popup_is-opened');
-  document.addEventListener('keydown', handleEscape);
+  document.addEventListener('keydown', handlerEscape);
 };
 
+// функция - слушатель
+// открыть форму Добавить изображение
+function openAddImage(event) {
+  event.preventDefault();
+  formAddImage.reset();  // очистка формы при открытии
+  openPopup(windowAddImage);
+};
+
+// функция - слушатель
+// открыть изображение
+function handlerOpenImage(event) {  
+  //Модальное окно Просмотреть изображение
+  const dataImage = openImage.querySelector('.popup__image');
+  const titleImage = openImage.querySelector('.popup__caption');
+
+  if (event.target.classList.contains('card__image')) {
+    openPopupImage(openImage);
+    dataImage.alt = event.target.alt;
+    dataImage.src= event.target.src;
+    titleImage.textContent = event.target.alt;
+  };  
+};
 

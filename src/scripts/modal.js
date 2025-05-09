@@ -1,18 +1,8 @@
-export { openAddImage,  addDataInProfile, addImg, 
-         openPopup, closePopup };
+export { addDataInProfile, addImg, openPopup, closePopup };
 
 import { placesList, placesItem, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
-  formAddImage, windowAddImage, inputCardName, inputCardUrl, handleEscape } from '../index.js';
+  windowAddImage, inputCardName, inputCardUrl, handlerEscape } from '../index.js';
 import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard } from './card.js';
-
-
-// функция - слушатели
-// открыть форму Добавить изображение
-function openAddImage(event) {
-  event.preventDefault();
-  formAddImage.reset();  // очистка формы при открытии
-  openPopup(windowAddImage);
-}
 
 // функция добавления значений: имени и занятия в текстовые поля на страницу
 function addInpyt(title, data) {
@@ -26,7 +16,8 @@ function addInpyt(title, data) {
 function addDataInProfile(event) {
   event.preventDefault();  
   addInpyt(inputUserName.value, inputDestiny.value);
-  windowEditProfile.classList.remove('popup_is-opened'); 
+  //windowEditProfile.classList.remove('popup_is-opened');
+  closePopup(windowEditProfile); 
 };
 
 // функция добавления элемента li (изображения) в начало списка ul
@@ -36,7 +27,8 @@ function addImg(event) {
   cardImg.name = inputCardName.value;
   cardImg.link = inputCardUrl.value;
   placesList.prepend(createPlacesItemClone(cardImg, deletePlacesItemClone, addLikeForCard, placesItem));
-  windowAddImage.classList.remove('popup_is-opened');  
+  // windowAddImage.classList.remove('popup_is-opened'); 
+  closePopup(windowAddImage); 
 };
 
 // функция открытия модального окна
@@ -44,14 +36,14 @@ function openPopup(nameModalWindow) {
   nameModalWindow.classList.add('popup_is-animated');
   nameModalWindow.classList.toggle('popup_is-opened');
   // регистрируем обработчик закрытия модального окна нажатием на клавишу "Escape"
-  document.addEventListener('keydown', handleEscape);
+  document.addEventListener('keydown', handlerEscape);
 };
 
 // функция закрытия модального окна
 function closePopup(nameModalWindow) {
   nameModalWindow.classList.remove('popup_is-opened');
   // удаляем обработчик закрытия модального окна нажатием на клавишу "Escape"
-  document.removeEventListener('keydown', handleEscape); 
+  document.removeEventListener('keydown', handlerEscape); 
 }
 
 
