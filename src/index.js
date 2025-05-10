@@ -1,11 +1,9 @@
 import { initialCards } from './scripts/cards.js';
 import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard } from './scripts/card.js';
-import { addDataInProfile, addImg, closePopup, openPopup} from './scripts/modal.js';
+import { closePopup, openPopup} from './scripts/modal.js';
 import '../src/styles/index.css';  // '..//styles/index.css'
 
-export { placesList, placesItem, windowEditProfile, inputUserName, inputDestiny, userName, userDestiny, 
-  formAddImage, windowAddImage, inputCardName, inputCardUrl, handlerEscape, handlerOpenImage }
-
+export { handlerEscape }
 // загружаем шаблон для создания элемента списка
 const cardTemplate = document.querySelector("#card-template").content;
 const placesItem = cardTemplate.querySelector(".places__item");
@@ -15,7 +13,7 @@ const mainContent = document.querySelector(".content");
 // загружаем список изображений
 const placesList = mainContent.querySelector(".places__list");
 
-for (let card of initialCards) {
+for (const card of initialCards) {
   // в начало списка ul добавляем элемент li
   placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard, placesItem, handlerOpenImage));   
 }
@@ -29,9 +27,9 @@ const windowEditProfile = document.querySelector('.popup_type_edit');
 
 // находим данные о пользователе на странице
   // имя пользователя на странице
-  let userName = document.querySelector('.profile__title');
+  const userName = document.querySelector('.profile__title');
   // занятие пользователя на странице
-  let userDestiny = document.querySelector('.profile__description'); 
+  const userDestiny = document.querySelector('.profile__description'); 
   
 //Модальное окно Добавить изображение
 const windowAddImage = document.querySelector('.popup_type_new-card');
@@ -54,10 +52,10 @@ const buttonsClose = document.querySelectorAll('.popup__close');
 const openImage = document.querySelector('.popup_type_image');
 
 // Массив форм
-let collection = document.forms;
+const collection = document.forms;
   // Формы
-  let formEditProfile = collection['edit-profile'];
-  let formAddImage = collection['new-place'];
+  const formEditProfile = collection['edit-profile'];
+  const formAddImage = collection['new-place'];
 
 // модальные окна
 const popups = document.querySelectorAll('.popup');
@@ -136,3 +134,27 @@ function handlerOpenImage(event) {
   };  
 };
 
+// функция добавления значений: имени и занятия в текстовые поля на страницу
+function addInpyt(title, data) {
+  userName.textContent = title;
+  userDestiny.textContent = data;
+};
+
+// функция-слушатель, сохраняет значения имени и занятия по кнопке Сохранить
+// сохраняет значения полей-инпутов в функцию, которая 
+// будет возвращать значения на страницу профиля 
+function addDataInProfile(event) {
+  event.preventDefault();  
+  addInpyt(inputUserName.value, inputDestiny.value);
+  closePopup(windowEditProfile); 
+};
+
+// функция добавления элемента li (изображения) в начало списка ul
+function addImg(event) {
+  event.preventDefault();
+  const cardImg = {};
+  cardImg.name = inputCardName.value;
+  cardImg.link = inputCardUrl.value;
+  placesList.prepend(createPlacesItemClone(cardImg, deletePlacesItemClone, addLikeForCard, placesItem, handlerOpenImage));
+  closePopup(windowAddImage); 
+};
