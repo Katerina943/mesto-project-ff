@@ -14,9 +14,17 @@
   margin-top: 48px;
 }
 
+/* стиль для кнопки при наведении на неё */
 .popup__button:hover {
   background: rgba(0, 0, 0, 0.8);
   cursor: pointer;
+}
+
+/* стиль для неактивной кнопки */
+.popup__button_not-active {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, .2);
+  color: rgba(0, 0, 0, .2);
 }
 
 @media screen and (max-width: 568px) {

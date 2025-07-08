@@ -6,6 +6,7 @@ import { handlerEscape } from '../index.js';
 function openPopup(nameModalWindow) {
   nameModalWindow.classList.add('popup_is-animated');
   nameModalWindow.classList.toggle('popup_is-opened');
+  
   // регистрируем обработчик закрытия модального окна нажатием на клавишу "Escape"
   document.addEventListener('keydown', handlerEscape);
 };

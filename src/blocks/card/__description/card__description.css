@@ -2,6 +2,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
-  padding: 25px 20px;
+  background: hsl(0, 0%, 100%);
+  padding: 17px 15px; /* изменение размера верхне и нижнего паддинга*/
+  
+}
+
+/* класс объединяющий кнопку лайка и количество */
+.like_and_quantity {
+  display: flex;
+  flex-direction: column; 
+  justify-content: space-between;
+  justify-content: center;
+  gap: 2px;
+  
+}
+
+/* количество лайков */
+.card__like-quantity {
+  text-align: center;
+  font-size: 14px; 
+  padding: 0; 
+  
 }

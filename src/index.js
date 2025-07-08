@@ -1,7 +1,9 @@
 import { initialCards } from './scripts/cards.js';
 import { createPlacesItemClone, deletePlacesItemClone, addLikeForCard } from './scripts/card.js';
 import { closePopup, openPopup} from './scripts/modal.js';
-import '../src/styles/index.css';  // '..//styles/index.css'
+import '../src/styles/index.css'; 
+import { enableValidation } from './scripts/validation.js';
+import { fetchChangeUserProfile, fetchGetUserProfile, fetchGetCards, fetchPostCard, fetchAvatar} from './scripts/api.js'
 
 export { handlerEscape }
 // загружаем шаблон для создания элемента списка
@@ -13,11 +15,6 @@ const mainContent = document.querySelector(".content");
 // загружаем список изображений
 const placesList = mainContent.querySelector(".places__list");
 
-for (const card of initialCards) {
-  // в начало списка ul добавляем элемент li
-  placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard, placesItem, handlerOpenImage));   
-}
-
 // Модальное окно Редактировать профиль
 const windowEditProfile = document.querySelector('.popup_type_edit');
   // поле имя пользователя
@@ -27,10 +24,32 @@ const windowEditProfile = document.querySelector('.popup_type_edit');
 
 // находим данные о пользователе на странице
   // имя пользователя на странице
-  const userName = document.querySelector('.profile__title');
+const userName = document.querySelector('.profile__title');
+
   // занятие пользователя на странице
-  const userDestiny = document.querySelector('.profile__description'); 
-  
+const userDestiny = document.querySelector('.profile__description'); 
+
+const avatarProfile = document.querySelector('.profile__image');
+
+Promise.all([fetchGetUserProfile(), fetchGetCards()]) 
+  .then((array) => {
+    const user = array[0]; 
+    const cards = array[1];
+
+    userName.textContent = user.name;
+    userDestiny.textContent = user.about; 
+    const userId = user._id;
+      
+    avatarProfile.style.backgroundImage = `url(${user.avatar})`;
+
+    for (const card of cards) {
+      // в начало списка ul добавляем элемент li
+      placesList.prepend(createPlacesItemClone(card, deletePlacesItemClone, addLikeForCard, placesItem, handlerOpenImage, userId));   
+    }    
+  })
+  .catch(error => console.log(error));
+
+
 //Модальное окно Добавить изображение
 const windowAddImage = document.querySelector('.popup_type_new-card');
   // поле название места
@@ -55,10 +74,27 @@ const openImage = document.querySelector('.popup_type_image');
 const collection = document.forms;
   // Формы
   const formEditProfile = collection['edit-profile'];
+  //console.log(formEditProfile);
+
   const formAddImage = collection['new-place'];
+  //console.log(formAddImage);  
 
 // модальные окна
 const popups = document.querySelectorAll('.popup');
+
+// Валидция
+const settings = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_not-active', 
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'form__input-error_active',                                  
+};
+
+enableValidation(settings);
+
+
 
 // слушатель кнопки Редактировать профиль
 buttonEditProfile.addEventListener('click', editProfileOpenedHandler);
@@ -130,14 +166,22 @@ function handlerOpenImage(event) {
     openPopupImage(openImage);
     dataImage.alt = event.target.alt;
     dataImage.src= event.target.src;
-    titleImage.textContent = event.target.alt;
+    titleImage.textContent = event.target.alt;    
   };  
 };
 
 // функция добавления значений: имени и занятия в текстовые поля на страницу
 function addInpyt(title, data) {
-  userName.textContent = title;
-  userDestiny.textContent = data;
+  const buttonSave = formEditProfile.querySelector('.popup__button');
+	buttonSave.textContent = 'Сохранение...';
+
+  fetchChangeUserProfile(title, data)
+  .then((json) => { 
+    userName.textContent = json.name;
+    userDestiny.textContent = json.about;
+  })
+  .catch((error) => {console.log(error)})
+  .finally(()=> {buttonSave.textContent = 'Сохранить'})
 };
 
 // функция-слушатель, сохраняет значения имени и занятия по кнопке Сохранить
@@ -152,9 +196,69 @@ function addDataInProfile(event) {
 // функция добавления элемента li (изображения) в начало списка ul
 function addImg(event) {
   event.preventDefault();
+
+  const buttonSave = formAddImage.querySelector('.popup__button');
+	buttonSave.textContent = 'Сохранение...';
+
   const cardImg = {};
-  cardImg.name = inputCardName.value;
-  cardImg.link = inputCardUrl.value;
-  placesList.prepend(createPlacesItemClone(cardImg, deletePlacesItemClone, addLikeForCard, placesItem, handlerOpenImage));
+
+  fetchPostCard(inputCardName, inputCardUrl)
+  .then((json) => {
+    cardImg.name = json.name;
+    cardImg.link = json.link;
+    cardImg.owner= json.owner;
+    cardImg.likes = json.likes;
+    cardImg._id = json._id;    
+    
+    placesList.prepend(createPlacesItemClone(cardImg, deletePlacesItemClone, addLikeForCard, placesItem, handlerOpenImage, json.owner._id));
+  })
+  .catch((error) => {console.log(error)})
+  .finally(() => {buttonSave.textContent = 'Сохранить'});
+  
   closePopup(windowAddImage); 
 };
+
+// Загружаем данные со страницы
+// загружаем фотографию с аватаром
+const avatarImg = document.querySelector('.profile__image');
+
+// кнопка-фото Изменить аватар с помощью клика на неё
+const editAvatarButton = document.querySelector('.profile__image_edit-button');
+//слушатель кнопки Аватар
+editAvatarButton.addEventListener('click', openEditAvatarForm);
+
+// Модальное окно Изменить аватар
+const editAvatarModal = document.querySelector('.popup_avatar_edit');
+// инпут модального окна с ссылкой
+const inputAvatar = editAvatarModal.querySelector('.popup__input_type_url');
+
+// нахождение коллекции всей формы для установки на ней слушателя submit
+const formEditAvatar = collection['edit-profile-avatar'];
+// слушатель кнопки Сохранить изменения аватара
+formEditAvatar.addEventListener('submit', changeAvatar);
+
+// функция-слушатель клика по Аватару
+// открытие модального окна Изменение аватара
+function openEditAvatarForm(event) {
+  event.preventDefault(); 
+  inputAvatar.value = '' ; // очистка инпута при открытии
+  openPopup(editAvatarModal); 
+};
+
+function changeAvatar(event) {
+  event.preventDefault();
+
+  const buttonSave = formEditAvatar.querySelector('.popup__button');
+	buttonSave.textContent = 'Сохранение...';
+
+  const inputAvatarValue = inputAvatar.value;
+
+  fetchAvatar(inputAvatarValue)
+  .then(json => {
+    avatarImg.style.backgroundImage = `url(${json.avatar})`;       
+  }) 
+  .catch((error) => {console.log(error)})
+  .finally(() => {buttonSave.textContent = 'Сохранить'});
+
+  closePopup(editAvatarModal);
+}
