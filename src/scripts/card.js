@@ -1,43 +1,49 @@
-import { initialCards } from "./cards";
-import { fetchDeleteCard, fetchAddLike, fetchDeleteLike } from './api'
+import { deleteCard, addLike, deleteLike } from './api'
 
 export { createPlacesItemClone, deletePlacesItemClone, addLikeForCard }
 //import { closePopup, openPopup } from "./modal.js";
 
 // функция создания элемента списка
-function createPlacesItemClone(initialCard, deletePlacesItem, addLikeForCard, placesItem, handlerOpenImage, usrId) {
+function createPlacesItemClone(cardData, deletePlacesItem, addLikeForCard, placesItem, handlerOpenImage, usrId) {
   // создаём новый элемент списка изображений 
   const placesItemClone = placesItem.cloneNode(true);
 
   // загружаем изображение из нового элемента
   const cardImage = placesItemClone.querySelector('.card__image');
   // проинициализируем изображение
-  cardImage.setAttribute('alt', initialCard.name);
-  cardImage.setAttribute('src', initialCard.link);
-  cardImage.setAttribute('data-card_id', initialCard._id);
+  cardImage.setAttribute('alt', cardData.name);
+  cardImage.setAttribute('src', cardData.link);
+  cardImage.setAttribute('data-card_id', cardData._id);
+
 
   // загружаем заголовок изображения
   const cardTitle = placesItemClone.querySelector('.card__title');
-  cardTitle.textContent = initialCard.name;
+  cardTitle.textContent = cardData.name;
 
   // загружаем кнопку удаления изображения из нового элемента
   const cardDeleteButton = placesItemClone.querySelector('.card__delete-button');
 
-  // если загружаемая карточка от моего пользователя, то кнопку удаляем
-  if (initialCard.owner._id !== usrId) {
-    //cardDeleteButton.classList.remove('card__delete-button');
-    cardDeleteButton.style.display = "none";
-  }
-
-  //добавляем обработчик события кнопке удаления изображения
-  cardDeleteButton.addEventListener('click', deletePlacesItem); 
-   
   // загружаем кнопку добавления лайка на изображении
   const cardLikeButton =  placesItemClone.querySelector('.card__like-button');
 
+  // если загружаемая карточка от моего пользователя, то кнопку удаляем  
+  if (cardData.owner._id !== usrId) {
+     cardDeleteButton.style.display = "none";    
+  }
+
+  //добавляем обработчик события кнопке удаления изображения
+  cardDeleteButton.addEventListener('click', deletePlacesItem);   
+
   // загружаем элемент для отображения количества лайков
   const likeQuantity = placesItemClone.querySelector('.card__like-quantity');
-  likeQuantity.innerHTML = initialCard.likes.length; 
+  likeQuantity.innerHTML = cardData.likes.length; 
+
+  // загружаем пользовател, который лайкали карточку
+  for (const liker of cardData.likes) {
+    if (liker._id === usrId)  {
+      cardLikeButton.classList.add('card__like-button_is-active'); 
+    }
+  } 
 
   // добавляем обработчик события кнопке лайка
   cardLikeButton.addEventListener('click', addLikeForCard);
@@ -77,14 +83,12 @@ function deletePlacesItemClone(event) {
   const cardImage = placesItemClone.querySelector('.card__image');
   const cardImageId = cardImage.getAttribute('data-card_id');
 
-  fetchDeleteCard(cardImageId)
-  .then((response) => {
-    if (response.ok) { 
+
+  deleteCard(cardImageId)
+  .then(() => {     
        // удаляем элемент из списка
        placesItemClone.remove();
-    }
-    else Promise.reject('Ошибка удаления карточки')
-  })
+      })
   .catch(error => console.log(error));
 }
 
@@ -94,32 +98,39 @@ function addLikeForCard(event) {
   if (!event.target.classList.contains('card__like-button')) return;
   // определяем конкретный элемент списка лайка
   const cardLikeButton = event.target;
-  // определяем конкретный элемент списка, который необходимо удалить
+  // определяем конкретный элемент списка
   const placesItemClone = cardLikeButton.closest('.places__item');
   // определяем дочерний элемент, для нахождения атрибута с id
   const cardImage = placesItemClone.querySelector('.card__image');
   const cardImageId = cardImage.getAttribute('data-card_id');
   const likeQuantity = placesItemClone.querySelector('.card__like-quantity');
     
-  // проверка наличия класса у кнопки лайка // если такого класса нет, то закрашиваем сердце
-  if (!cardLikeButton.classList.contains('card__like-button_is-active')) {
-  
-    fetchAddLike(cardImageId)    
+  // проверка наличия класса у кнопки лайка 
+  /* 
+  if (!cardLikeButton.classList.contains('card__like-button_is-active') ) {
+    addLike(cardImageId)    
     .then((json) => {
-      cardLikeButton.classList.add('card__like-button_is-active'); 
-      likeQuantity.innerHTML = json.likes.length;
-      console.log(json.likes.length);
-    })
-    .catch(error => console.log(error));    
-  }
-   
+        cardLikeButton.classList.add('card__like-button_is-active'); 
+        likeQuantity.textContent = json.likes.length;
+        console.log(json._id);
+      })  
+    .catch(error => {console.log(error)});    
+  }   
   else { 
     // запрос для удаления лайка
-    fetchDeleteLike(cardImageId)
-    .then((json) => {
+    deleteLike(cardImageId)
+    .then((json) => {      
       cardLikeButton.classList.remove('card__like-button_is-active');
-      likeQuantity.innerHTML = json.likes.length;
+      likeQuantity.textContent = json.likes.length;
       console.log(json.likes.length);
     })
-  }  
+  } 
+  */
+  const likeMethod = cardLikeButton.classList.contains('card__like-button_is-active') ? deleteLike : addLike;
+    likeMethod(cardImageId) 
+      .then((res) => {
+           likeQuantity.textContent = res.likes.length; 
+           cardLikeButton.classList.toggle("card__like-button_is-active"); 
+      })
+      .catch(err => console.log(err));
 }

@@ -1,3 +1,14 @@
+//import { settings } from '../index.js';
+
+
+const settings = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_not-active',  // 'popup__button_disabled'  // кнопка отключена
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'form__input-error_active',                                   //  'popup__error_visible',
+};
 
 
 // показать ошибку
@@ -27,7 +38,8 @@ const isValid = (formElement, inputElement) => {
  if (inputElement.validity.patternMismatch) {
         // встроенный метод setCustomValidity принимает на вход строку
         // и заменяет ею стандартное сообщение об ошибке
-    inputElement.setCustomValidity("Разрешены только латинские и кириллические буквы, знаки дефиса и пробелы.");
+    // inputElement.setCustomValidity("Разрешены только латинские и кириллические буквы, знаки дефиса и пробелы.");
+    inputElement.classList.add('.data-error-message');
   } else {
         // если передать пустую строку, то будут доступны
         // стандартные браузерные сообщения
@@ -36,9 +48,11 @@ const isValid = (formElement, inputElement) => {
 
   if (!inputElement.validity.valid) {
     // теперь, если ошибка вызвана регулярным выражением,
-        // переменная validationMessage хранит наше кастомное сообщение
+        // переменная validationMessage хранит кастомное сообщение
     showError(formElement, inputElement, inputElement.validationMessage, settings);
   } else {
+    // Если поле проходит валидацию, то скроем ошибку; hideError получает форму, в кот
+    // находится проверяемое поле, и само поле
     hideError(formElement, inputElement, settings);
   }
 };
@@ -61,12 +75,12 @@ const hasInvalidInput = (inputList) => {
 const toggleButtonState = (inputList, buttonElement, settings) => {
   // Если есть хотя бы один невалидный инпут
   if (hasInvalidInput(inputList)) {
-    // сделай кнопку неактивной
+    // сделать кнопку неактивной
     buttonElement.disabled = true;
     buttonElement.classList.add(settings.inactiveButtonClass);  // 'popup__button_not-active'
     buttonElement.classList.remove('popup__button:hover');
   } else {
-    // иначе сделай кнопку активной
+    // иначе сделать кнопку активной
     buttonElement.disabled = false;
     buttonElement.classList.remove(settings.inactiveButtonClass);  // 'popup__button_not-active'
   }
@@ -119,15 +133,27 @@ export const enableValidation = (settings) => {
 };
 
 
-/*
-const settings = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_not-active',  // 'popup__button_disabled'  // кнопка отключена
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'form__input-error_active',                                   //  'popup__error_visible',
+/////////////////////
+
+// При повторном открытии формы убирает все ошибки и деактивирует кнопку
+export const clearValidation = (formElement, settings) => {
+  const inputList = Array.from(
+    formElement.querySelectorAll(settings.inputSelector)
+  );
+  const buttonElement = formElement.querySelector(settings.submitButtonSelector);
+
+  inputList.forEach((inputElement) => {
+    hideError(formElement, inputElement, settings);
+      // сделать кнопку неактивной
+    buttonElement.disabled = true;
+    buttonElement.classList.add(settings.inactiveButtonClass);  // 'popup__button_not-active'
+    //buttonElement.classList.remove('popup__button:hover');
+    
+  });
 };
-*/
+
+
+
+
 
 
