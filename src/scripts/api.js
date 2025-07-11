@@ -70,7 +70,7 @@ export function deleteCard(cardImageId) {
     method: 'DELETE',
 
     headers: {
-      authorization: 'c569c80a-83b5-4b21-900d-b6e663669d71',    
+      authorization: token41,    
     }
   })
   .then(handleResponse);
@@ -81,7 +81,7 @@ export function addLike(cardImageId) {
     method: 'PUT',
 
     headers: {
-      authorization: 'c569c80a-83b5-4b21-900d-b6e663669d71',    
+      authorization: token41,    
     }
   })
   .then(handleResponse);
@@ -92,7 +92,7 @@ export function deleteLike(cardImageId) {
     method: 'DELETE',                                    
 
     headers: {
-      authorization: 'c569c80a-83b5-4b21-900d-b6e663669d71',    
+      authorization: token41,    
     }
   }) 
   .then(handleResponse);

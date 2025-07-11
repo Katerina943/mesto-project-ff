@@ -1,6 +1,6 @@
-//import { settings } from '../index.js';
+import { settings } from '../index.js';
 
-
+/*
 const settings = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -8,8 +8,9 @@ const settings = {
   inactiveButtonClass: 'popup__button_not-active',  // 'popup__button_disabled'  // кнопка отключена
   inputErrorClass: 'popup__input_type_error',
   errorClass: 'form__input-error_active',                                   //  'popup__error_visible',
+  dataError: '.data-error-message',
 };
-
+*/
 
 // показать ошибку
 const showError = (formElement, inputElement, errorMessage, settings) => {
@@ -39,7 +40,7 @@ const isValid = (formElement, inputElement) => {
         // встроенный метод setCustomValidity принимает на вход строку
         // и заменяет ею стандартное сообщение об ошибке
     // inputElement.setCustomValidity("Разрешены только латинские и кириллические буквы, знаки дефиса и пробелы.");
-    inputElement.classList.add('.data-error-message');
+    inputElement.classList.add(settings.dataError);
   } else {
         // если передать пустую строку, то будут доступны
         // стандартные браузерные сообщения
